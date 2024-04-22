@@ -1,67 +1,50 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+import { lightbox } from '../main';
+import { gallery } from '../main';
 
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
+export function renderData(data) {
+  // console.log(data);
+  const img = data.hits;
+  const arrayOfImg = img
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => {
+        return `<li class="list-link">
 
-const gallery = document.querySelector('.gallery');
+                            <a href="${largeImageURL}">
+                            <img class="gallery-links" src="${webformatURL}" alt="${tags}"></a>
 
-export function renderImages(arr) {
-  const markup = renderMarkup(arr);
-  gallery.innerHTML = markup;
-  lightbox.refresh();
-}
+                            <div class="parameters">
+                                <ul class="parameters-list">
+                                    <li class="parameters-list-item">likes:</li>
+                                    <li class="parameters-list-item">${likes}</li>
+                                </ul>
+                                <ul class="parameters-list">
+                                    <li class="parameters-list-item">views:</li>
+                                    <li class="parameters-list-item">${views}</li>
+                                </ul>
+                                <ul class="parameters-list">
+                                    <li class="parameters-list-item">comments:</li>
+                                    <li class="parameters-list-item">${comments}</li>
+                                </ul>
+                                <ul class="parameters-list">
+                                    <li class="parameters-list-item">downloads:</li>
+                                    <li class="parameters-list-item">${downloads}</li>
+                                </ul>
+                        </div>
+                        </li>`;
+      }
+    )
+    .join('');
 
-function renderMarkup(arr) {
-  return arr.map(imgTemplate).join('\n');
-}
-
-function imgTemplate(img) {
-  const {
-    webformatURL,
-    largeImageURL,
-    tags,
-    likes,
-    views,
-    comments,
-    downloads,
-    previewWidth,
-    previewHeight,
-  } = img;
-
-  return `<li class="gallery-item">
-    <a class="gallery-link" href="${largeImageURL}">
-        <img
-            class="gallery-image"
-            src="${webformatURL}"
-            alt="${tags}"
-            width="${previewWidth}"
-            height="${previewHeight}"
-        />
-    </a>
-    <ul class="desc-list">
-            <li class="desc-item">
-                <h3 class="desc-title">Likes</h3>
-                <p>${likes}</p>
-            </li>
-            <li class="desc-li">
-                <h3 class="desc-title">Views</h3>
-                <p>${views}</p>
-            </li>
-            <li class="desc-li">
-                <h3 class="desc-title">Comments</h3>
-                <p>${comments}</p>
-            </li>
-            <li class="desc-li">
-                <h3 class="desc-title">Downloads</h3>
-                <p>${downloads}</p>
-            </li>
-        </ul>
-</li>`;
-}
-
-export function clearMarkup() {
-  gallery.innerHTML = '';
+  gallery.innerHTML = arrayOfImg;
+  lightbox.refresh(
+    'https://github.com/andreknieriem/simplelightbox#public-methods'
+  );
 }
